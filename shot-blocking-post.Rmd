@@ -24,9 +24,9 @@ set_token(TOKEN)
 ```
 
 
-The other day, the Yhat blog posted a nice [article](http://blog.yhat.com/posts/hockey-shot-blocking.html) on shot blocking in the NHL, with emphasis on the differences that may occur between the regular season and the playoffs.  The author Ross demonstrated how to collect the data from NHL website by parsing the data using python.
+The other day, the Yhat blog posted a nice [article](http://blog.yhat.com/posts/hockey-shot-blocking.html) on shot blocking in the NHL, with emphasis on the differences that may occur between the regular season and the playoffs.  The author Ross demonstrated how to collect the data from NHL website by parsing the data using python, but commented that getting shot blocking data was more difficult than expected.
 
-At Stattleship, we have an API that makes it simple to get at the same data.  While we currently only include this season's data for the NHL, the API will consistently and reliably return these data for you; no need to worry about changing webpages!
+At Stattleship, we have an API that makes accessing shot blocking data extremely simple.  While we currently only include this season's data for the NHL, the API will consistently and reliably return these data for you; no need to worry about changing webpages!
 
 Below we will use our R package [stattleshipR](https://github.com/stattleship/stattleship-r) to work with the API and replicate the Yhat post.  This post will work through the various code samples, but the full script is included in the Appendix at the end.
 
@@ -176,7 +176,7 @@ gls_post %>% plot_ly(x = bpg_diff, opacity=.66, type="histogram", name="Delta") 
 ```
 
 
-A test for normality and 1-sample t-test ...
+Just like in the original post, we can use R to run a simple test of normality and that the blocks-per-game are stastiticaly different in the playoffs relative to the regular season.
 
 ```{r}
 ## normality test
@@ -185,6 +185,8 @@ shapiro.test(gls_post$bpg_diff)
 ## 1-sample t-test
 t.test(gls_post$bpg_diff, mu = 0)
 ```
+
+Because we are using only one season, the sample size is smaller.  We don't have to go into the discussions around how you should test for normality and the impact of sample size on these tests (see this [post for more detail](http://stackoverflow.com/questions/7781798/seeing-if-data-is-normally-distributed-in-r/7788452#7788452)), but we fail to reject that null hypothesis that the data are __not__ normal, just like in Yhat's post.  Similarly, even with just one year of data, the results suggest that shot blocking increases statistically in the playoffs.
 
 Last but not least, because we only have the current season available, instead of using boxplots to look at the distribution of blocks per game over a set of seasons, below we are isolating the differences by division instead.
 
