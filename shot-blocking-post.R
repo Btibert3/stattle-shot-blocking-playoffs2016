@@ -62,12 +62,19 @@ plot_ly(x = gls_agg$bpg_reg, opacity = 0.66, type = "histogram", name="Regular S
   layout(barmode="overlay", 
          bargap = .25,
          title="2015-16 NHL Shot Blocks Per Game",
-         xaxis = list(title="Blocks Per Game"))
+         xaxis = list(title="Blocks Per Game")) -> plot1
+
+## post, using the system enrvironment variables
+## https://plot.ly/r/getting-started/  <--- mine are in .Renviron
+plotly_POST(plot1, filename="stattle/season-hist")
 
 ## isolate playoff teams and then a simple distribution
 gls_post <- filter(gls_agg, games_post > 0)
 gls_post %>% plot_ly(x = bpg_diff, opacity=.66, type="histogram", name="Delta") %>% 
-  layout(bargap = .25, xaxis = list(title="Difference"), title="Difference in Blocks Per Game")
+  layout(bargap = .25, xaxis = list(title="Difference"), title="Difference in Blocks Per Game") -> plot2
+
+## send to plotly
+plotly_POST(plot2, filename="stattle/playoff-blocks-diff")
 
 ## normality test
 shapiro.test(gls_post$bpg_diff)
@@ -79,5 +86,5 @@ t.test(gls_post$bpg_diff, mu = 0)
 gls_agg %>% 
   plot_ly(y = bpg_reg, color = team_division_name, type="box") %>% 
   layout(title = "2015-16 Regular Season Blocks per Game by Division",
-         yaxis = list(title="Blocks per Game"))
-
+         yaxis = list(title="Blocks per Game")) -> plot3
+plotly_POST(plot3, filename="stattle/regseason-div-shotblocks")
